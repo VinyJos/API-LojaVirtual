@@ -4,6 +4,7 @@ namespace LojaVirtual.Repositories
 {
     public interface IUsuarioRepository
     {
+        // Métodos principais
         public void CriarUsuario(Usuario usuario); // Post Usuario
         public void EditarVerificacaoUsuario(Usuario usuario); // Update usuario
         public List<Categoria> ListagemDeCategorias(); // Get categoria
@@ -12,6 +13,9 @@ namespace LojaVirtual.Repositories
         public void AutenticaUsuario(); // Update 
         public void NovoPedido(Pedido pedido); //Post pedido
         public List<Pedido> ListaPedidos(); // Get pedidos
+
+        // Outros Métodos
+        public string VerificaUsuario(string login);
 
     }
 }
