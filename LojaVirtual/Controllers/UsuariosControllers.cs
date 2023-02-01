@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LojaVirtual.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class UsuariosControllers : ControllerBase
     {
@@ -16,7 +16,7 @@ namespace LojaVirtual.Controllers
             _repository= new UsuarioRepository();
         }
 
-
+        [Route("CriarUsuario")]
         [HttpPost]
         public IActionResult CriarUsuario([FromBody]Usuario usuario)
         {
@@ -47,6 +47,7 @@ namespace LojaVirtual.Controllers
 
         }
 
+        [Route("EditarVerificacaoUsuario")]
         [HttpPut]
         public IActionResult EditarVerificacaoUsuario(Usuario usuario)
         {
@@ -65,10 +66,20 @@ namespace LojaVirtual.Controllers
                 return NotFound("Usuário não encontrado");
             }
 
-                
-            
 
+        }
 
+        [Route("ListagemDeCategorias")]
+        [HttpGet]
+        public IActionResult ListagemDeCategorias()
+        {
+            var categoria = _repository.ListagemDeCategorias();
+
+            if (categoria == null)
+            {
+                return NotFound();
+            }
+            return Ok(categoria);
         }
     }
 }
