@@ -6,7 +6,7 @@ namespace LojaVirtual.Repositories
     {
         // Métodos principais
         public void CriarUsuario(Usuario usuario); // Post Usuario
-        public void EditarVerificacaoUsuario(Usuario usuario); // Update usuario
+        public Usuario EditarVerificacaoUsuario(Usuario usuario); // Update usuario
         public List<Categoria> ListagemDeCategorias(); // Get categoria
         public List<Produto> ProdutosPorCategoria(string url); // Get com ULR
         public Produto GetProduto(string url); // Get Produto 

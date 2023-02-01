@@ -42,9 +42,34 @@ namespace LojaVirtual.Repositories
             }
         }
 
-        public void EditarVerificacaoUsuario(Usuario usuario)
+        public Usuario EditarVerificacaoUsuario(Usuario usuario)
         {
-            throw new NotImplementedException();
+            try
+            {
+                SqlCommand command = new SqlCommand();
+
+                command.CommandText = "UPDATE Usuario SET IsVerificado = @IsVerificado WHERE Email = @Email AND ChaveVerificacao = @ChaveVerificacao";
+                command.Connection = (SqlConnection)_connection;
+
+                _connection.Open();
+                command.Parameters.AddWithValue("@Email", usuario.Email);
+                command.Parameters.AddWithValue("@ChaveVerificacao", usuario.ChaveVerificacao);
+                command.Parameters.AddWithValue("@IsVerificado", usuario.IsVerificado);
+
+                command.ExecuteNonQuery();
+                return usuario;
+                
+
+
+                // -----------------------------------------------------
+
+            }
+            finally
+            {
+
+                _connection.Close();
+            }
+            
         }
 
         public List<Categoria> ListagemDeCategorias()
@@ -107,6 +132,48 @@ namespace LojaVirtual.Repositories
             }
 
            
+        }
+
+        public List<string> VerificaUsuarioValidacao(Usuario usuario)
+        {
+            try
+            {
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "SELECT * FROM Usuario WHERE Email = @Email AND ChaveVerificacao = @ChaveVerificacao";
+                command.Parameters.AddWithValue("@Email", usuario.Email);
+                command.Parameters.AddWithValue("@ChaveVerificacao", usuario.ChaveVerificacao);
+
+                command.Connection = (SqlConnection)_connection;
+                _connection.Open();
+                SqlDataReader dataReader = command.ExecuteReader();
+
+                var log = new List<string>();
+                if (dataReader.Read())
+                {
+                    int email = dataReader.GetOrdinal("Email");
+                    int chave = dataReader.GetOrdinal("ChaveVerificacao");
+
+                    log.Add(dataReader.GetString(email).ToString());
+                    log.Add(dataReader.GetString(chave).ToString());
+
+                    return log;
+                    
+                }
+                else
+                {
+                    log.Add("null");
+                    log.Add("null");
+                    return log;
+                }
+            }
+            finally
+            {
+
+                _connection.Close();
+            }
+            
+
+            
         }
 
     }

@@ -50,18 +50,23 @@ namespace LojaVirtual.Controllers
         [HttpPut]
         public IActionResult EditarVerificacaoUsuario(Usuario usuario)
         {
-            try
+            
+           
+            var user = _repository.VerificaUsuarioValidacao(usuario);
+
+            if (user[0] == usuario.Email && user[1] == usuario.ChaveVerificacao)
             {
-                _repository.EditarVerificacaoUsuario(usuario);
-                return Ok(usuario);
+                usuario.IsVerificado = true;
+                var retorno = _repository.EditarVerificacaoUsuario(usuario);
+                return Ok(retorno.IsVerificado);
             }
-            catch (Exception a)
+            else
             {
-
-                return BadRequest(a.Message);
-
+                return NotFound("Usuário não encontrado");
             }
 
+                
+            
 
 
         }
