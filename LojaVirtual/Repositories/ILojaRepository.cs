@@ -2,7 +2,7 @@
 
 namespace LojaVirtual.Repositories
 {
-    public interface IUsuarioRepository
+    public interface ILojaRepository
     {
         // Métodos principais
         public void CriarUsuario(Usuario usuario); // Post Usuario

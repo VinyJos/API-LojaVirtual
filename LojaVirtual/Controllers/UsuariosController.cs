@@ -8,17 +8,17 @@ namespace LojaVirtual.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuariosControllers : ControllerBase
+    public class UsuariosController : ControllerBase
     {
-        private UsuarioRepository _repository;
+        private LojaRepository _repository;
 
-        public UsuariosControllers()
+        public UsuariosController()
         {
-            _repository= new UsuarioRepository();
+            _repository= new LojaRepository();
         }
 
         //[Route("CriarUsuario")]
-        [HttpPost]
+        [HttpPost("CriarUsuario")]
         public IActionResult CriarUsuario([FromBody]Usuario usuario)
         {
            
@@ -49,7 +49,7 @@ namespace LojaVirtual.Controllers
         }
 
         //[Route("EditarVerificacaoUsuario")]
-        [HttpPut]
+        [HttpPut("EditarVerificacaoUsuario")]
         public IActionResult EditarVerificacaoUsuario(Usuario usuario)
         {
             
@@ -70,56 +70,10 @@ namespace LojaVirtual.Controllers
 
         }
 
-        //[Route("ListagemDeCategorias")]
-        [HttpGet]
-        public IActionResult ListagemDeCategorias()
-        {
-            var categoria = _repository.ListagemDeCategorias();
+        
 
-            if (categoria == null)
-            {
-                return NotFound();
-            }
-            return Ok(categoria);
-        }
+        
 
-        //[Route("ProdutosPorCategoria")]
-        [HttpGet("{url}")]
-        public IActionResult ProdutosPorCategoria(string url)
-        {
-            var decodedUrl = Uri.UnescapeDataString(url);
-            var listaProdutos = _repository.ProdutosPorCategoria(decodedUrl);
-
-            if (listaProdutos.Count() <= 0)
-            {
-                return Ok("Categoria não disponível.");
-                
-            }
-            else
-            {
-                return Ok(listaProdutos);
-            }
-        }
-
-        [HttpGet("GetProduto/{url}")]
-        public IActionResult GetProduto(string url)
-        {
-            var decodedUrl = Uri.UnescapeDataString(url);
-            var produto = _repository.GetProduto(decodedUrl);
-
-
-            if (produto == null)
-            {
-                return NotFound("Erro na Url");
-            }
-            else if (produto.Ativo == false)
-            {
-                return Ok("Não está disponível");
-            }
-            else
-            {
-                return Ok(produto);
-            }
-        }
+       
     }
 }

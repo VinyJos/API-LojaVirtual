@@ -5,11 +5,11 @@ using System.Data.SqlClient;
 
 namespace LojaVirtual.Repositories
 {
-    public class UsuarioRepository : IUsuarioRepository
+    public class LojaRepository : ILojaRepository
     {
         private IDbConnection _connection;
 
-        public UsuarioRepository()
+        public LojaRepository()
         {
             _connection = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=LojaVirtual;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
