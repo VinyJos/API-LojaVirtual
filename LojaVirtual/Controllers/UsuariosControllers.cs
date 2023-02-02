@@ -100,5 +100,26 @@ namespace LojaVirtual.Controllers
                 return Ok(listaProdutos);
             }
         }
+
+        [HttpGet("GetProduto/{url}")]
+        public IActionResult GetProduto(string url)
+        {
+            var decodedUrl = Uri.UnescapeDataString(url);
+            var produto = _repository.GetProduto(decodedUrl);
+
+
+            if (produto == null)
+            {
+                return NotFound("Erro na Url");
+            }
+            else if (produto.Ativo == false)
+            {
+                return Ok("Não está disponível");
+            }
+            else
+            {
+                return Ok(produto);
+            }
+        }
     }
 }

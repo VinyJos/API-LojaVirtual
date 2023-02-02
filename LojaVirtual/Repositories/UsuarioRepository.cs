@@ -1,4 +1,5 @@
 ﻿using LojaVirtual.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -129,7 +130,6 @@ namespace LojaVirtual.Repositories
                 _connection.Open();
                 SqlDataReader dataReader = command.ExecuteReader();
 
-                Console.WriteLine(url);
 
                 while (dataReader.Read())
                 {
@@ -164,7 +164,7 @@ namespace LojaVirtual.Repositories
             }
             finally
             {
-
+               
                 _connection.Close();
             }
            
@@ -174,7 +174,45 @@ namespace LojaVirtual.Repositories
 
         public Produto GetProduto(string url)
         {
-            throw new NotImplementedException();
+            try
+            {
+
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "SELECT * FROM Produto WHERE Produto.Url = @Url";
+                command.Parameters.AddWithValue("@Url", url);
+
+                command.Connection = (SqlConnection)_connection;
+
+                _connection.Open();
+                SqlDataReader dataReader = command.ExecuteReader();
+
+                dataReader.Read();
+                Produto produto = new Produto();
+
+                produto.Id = dataReader.GetInt32(0);
+                produto.CategoriaId = dataReader.GetInt32(1);
+                produto.Nome = dataReader.GetString(2);
+                produto.Url = dataReader.GetString(3);
+                produto.Quantidade = dataReader.GetInt32(4);
+                produto.Ativo = dataReader.GetBoolean(5);
+                produto.Excluido = dataReader.GetBoolean(6);
+
+
+
+                return produto;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally 
+            {
+
+                _connection.Close();
+            }
+
+            
         }
         public void AutenticaUsuario()
         {
