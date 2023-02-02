@@ -118,8 +118,60 @@ namespace LojaVirtual.Repositories
 
         public List<Produto> ProdutosPorCategoria(string url)
         {
-            throw new NotImplementedException();
+            List<Produto> produtos = new List<Produto>();
+            try
+            {
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "SELECT * FROM Categoria INNER JOIN  Produto ON Categoria.Id = Produto.CategoriaId WHERE Categoria.Url = @Url";
+                command.Parameters.AddWithValue("@Url", url);
+                command.Connection = (SqlConnection)_connection;
+
+                _connection.Open();
+                SqlDataReader dataReader = command.ExecuteReader();
+
+                Console.WriteLine(url);
+
+                while (dataReader.Read())
+                {
+                    Categoria categoria = new Categoria();
+                    Produto produto = new Produto();
+
+                    categoria.Ativo = dataReader.GetBoolean(3);
+
+                    if (categoria.Ativo == false)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        
+                        produto.Id = dataReader.GetInt32(5);
+                        produto.CategoriaId = dataReader.GetInt32(0);
+                        produto.Nome = dataReader.GetString(7);
+                        produto.Url = dataReader.GetString(8);
+                        produto.Quantidade = dataReader.GetInt32(9);
+                        produto.Ativo = dataReader.GetBoolean(10);
+                        produto.Excluido = dataReader.GetBoolean(11);
+
+                        produtos.Add(produto);
+                        Console.WriteLine(produto.Nome);
+                    }
+
+                    
+                }
+                
+                
+            }
+            finally
+            {
+
+                _connection.Close();
+            }
+           
+            return produtos;
         }
+
+
         public Produto GetProduto(string url)
         {
             throw new NotImplementedException();

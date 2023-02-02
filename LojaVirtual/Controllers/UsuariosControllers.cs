@@ -2,10 +2,11 @@
 using LojaVirtual.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LojaVirtual.Controllers
 {
-    [Route("api/")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UsuariosControllers : ControllerBase
     {
@@ -16,7 +17,7 @@ namespace LojaVirtual.Controllers
             _repository= new UsuarioRepository();
         }
 
-        [Route("CriarUsuario")]
+        //[Route("CriarUsuario")]
         [HttpPost]
         public IActionResult CriarUsuario([FromBody]Usuario usuario)
         {
@@ -47,7 +48,7 @@ namespace LojaVirtual.Controllers
 
         }
 
-        [Route("EditarVerificacaoUsuario")]
+        //[Route("EditarVerificacaoUsuario")]
         [HttpPut]
         public IActionResult EditarVerificacaoUsuario(Usuario usuario)
         {
@@ -69,7 +70,7 @@ namespace LojaVirtual.Controllers
 
         }
 
-        [Route("ListagemDeCategorias")]
+        //[Route("ListagemDeCategorias")]
         [HttpGet]
         public IActionResult ListagemDeCategorias()
         {
@@ -80,6 +81,24 @@ namespace LojaVirtual.Controllers
                 return NotFound();
             }
             return Ok(categoria);
+        }
+
+        //[Route("ProdutosPorCategoria")]
+        [HttpGet("{url}")]
+        public IActionResult ProdutosPorCategoria(string url)
+        {
+            var decodedUrl = Uri.UnescapeDataString(url);
+            var listaProdutos = _repository.ProdutosPorCategoria(decodedUrl);
+
+            if (listaProdutos.Count() <= 0)
+            {
+                return Ok("Categoria não disponível.");
+                
+            }
+            else
+            {
+                return Ok(listaProdutos);
+            }
         }
     }
 }
