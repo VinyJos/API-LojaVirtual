@@ -9,7 +9,7 @@ namespace LojaVirtual.Sevices
 {
     public class TokenService
     {
-        public static object GerarToken(Usuario usuario)
+        public static string GerarToken(Usuario usuario)
         {
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
             var tokenConfig = new SecurityTokenDescriptor
@@ -27,10 +27,7 @@ namespace LojaVirtual.Sevices
             var token = tokenHandler.CreateToken(tokenConfig);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return new
-            {
-                token = tokenString
-            };
+            return tokenString;
         }
     }
 }

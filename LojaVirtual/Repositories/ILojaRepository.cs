@@ -10,7 +10,7 @@ namespace LojaVirtual.Repositories
         public List<Categoria> ListagemDeCategorias(); // Get categoria
         public List<Produto> ProdutosPorCategoria(string url); // Get com ULR
         public Produto GetProduto(string url); // Get Produto 
-        public void AutenticaUsuario(); // Update 
+        public string AutenticaUsuario(int id, string login, string senha); // Update 
         public void NovoPedido(Pedido pedido); //Post pedido
         public List<Pedido> ListaPedidos(); // Get pedidos
 

@@ -18,7 +18,7 @@ namespace LojaVirtual.Controllers
             _repository= new LojaRepository();
         }
 
-        //[Route("CriarUsuario")]
+      
         [HttpPost("CriarUsuario")]
         public IActionResult CriarUsuario([FromBody]Usuario usuario)
         {
@@ -49,8 +49,8 @@ namespace LojaVirtual.Controllers
 
         }
 
-        //[Route("EditarVerificacaoUsuario")]
-        [HttpPut("EditarVerificacaoUsuario")]
+       
+        [HttpPut("VerificaUsuario")]
         public IActionResult EditarVerificacaoUsuario(Usuario usuario)
         {
             
@@ -72,15 +72,22 @@ namespace LojaVirtual.Controllers
         }
 
         [HttpPost("AutenticaUsuario")]
-        public IActionResult AutenticaUsuario(int id, string nome, string senha)
+        public IActionResult AutenticaUsuario(int id, string login, string senha)
         {
-            if (nome == "Vinicius" && senha == "12345")
+            if (id != null && login != null && senha != null)
             {
-                var token = LojaVirtual.Sevices.TokenService.GerarToken(new Usuario());
-                return Ok(token);
-            }
+                var resposta = _repository.AutenticaUsuario(id, login, senha);
 
-            return BadRequest("Nome ou Senha inválido !");
+                switch (resposta)
+                {
+                    case "OKTokenGerado" : return Ok(); break;
+                    case "NaoVerificado": return BadRequest("Usuário não verificado,ou não ativo, ou excluído!"); break;
+                    case "LastTokenJaContem" : return BadRequest("Usuário já estava autenticado!"); break;
+                    case "nulo" : return BadRequest("Usuário não encontrado"); break;
+                    default: return NotFound(); break;
+                }
+            }
+            return BadRequest();
         }
 
 

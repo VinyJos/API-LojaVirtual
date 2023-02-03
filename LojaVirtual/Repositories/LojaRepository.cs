@@ -239,10 +239,16 @@ namespace LojaVirtual.Repositories
                     usuario.Email = dataReader.GetString("Email");
                     usuario.Senha = dataReader.GetString("Senha"); // ===
                     usuario.ChaveVerificacao = dataReader.GetString("ChaveVerificacao");
-                    usuario.LastToken = dataReader.GetString("LastToken");
                     usuario.IsVerificado = dataReader.GetBoolean("IsVerificado");
                     usuario.Ativo = dataReader.GetBoolean("Ativo");
                     usuario.Excluido = dataReader.GetBoolean("Excluido");
+
+                    // Verifica se já não foi gerado o Token 
+                    if (!dataReader.IsDBNull(dataReader.GetOrdinal("LastToken")))
+                        usuario.LastToken = dataReader.GetString("LastToken");
+                    else
+                        usuario.LastToken = null;
+                   
 
                     if (usuario.LastToken == null)
                     {
@@ -253,9 +259,22 @@ namespace LojaVirtual.Repositories
                             )
                         {
                             // GERAR TOKEN
-
+                            var token = LojaVirtual.Sevices.TokenService.GerarToken(usuario);
 
                             // ADICIONA NO BANCO
+                            _connection.Close();
+                            _connection.Open();
+                            command.Parameters.Clear();
+
+                            command.CommandText = "UPDATE Usuario SET LastToken = @LastToken WHERE Id = @Id";
+                            command.Parameters.AddWithValue("@Id", usuario.Id);
+                            command.Parameters.AddWithValue("@LastToken", token);
+
+
+                            command.ExecuteNonQuery();
+
+                            return "OKTokenGerado";
+
                         }
                         else
                         {
@@ -266,19 +285,11 @@ namespace LojaVirtual.Repositories
                     {
                         return "LastTokenJaContem";
                     }
-                        
-                        
-                        
-                    
-
                 }
                 else
                 {
                     return "nulo";
                 }
-
-                
-
             }
             finally
             {
