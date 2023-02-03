@@ -1,5 +1,6 @@
 ﻿using LojaVirtual.Models;
 using LojaVirtual.Repositories;
+using LojaVirtual.Sevices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
@@ -70,10 +71,18 @@ namespace LojaVirtual.Controllers
 
         }
 
-        
+        [HttpPost("AutenticaUsuario")]
+        public IActionResult AutenticaUsuario(int id, string nome, string senha)
+        {
+            if (nome == "Vinicius" && senha == "12345")
+            {
+                var token = LojaVirtual.Sevices.TokenService.GerarToken(new Usuario());
+                return Ok(token);
+            }
 
-        
+            return BadRequest("Nome ou Senha inválido !");
+        }
 
-       
+
     }
 }

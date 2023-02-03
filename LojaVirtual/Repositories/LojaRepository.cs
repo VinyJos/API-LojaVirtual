@@ -214,9 +214,77 @@ namespace LojaVirtual.Repositories
 
             
         }
-        public void AutenticaUsuario()
+        public string AutenticaUsuario(int id, string login, string senha)
         {
-            throw new NotImplementedException();
+            try
+            {
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "SELECT * FROM Usuario WHERE Id = @Id AND Login = @Login AND Senha = @Senha";
+
+                command.Parameters.AddWithValue("@Id", id);
+                command.Parameters.AddWithValue("@Login", login);
+                command.Parameters.AddWithValue("@Senha", senha);
+
+                command.Connection = (SqlConnection)_connection;
+                _connection.Open();
+
+                SqlDataReader dataReader = command.ExecuteReader();
+
+                if (dataReader.Read())
+                {
+                    Usuario usuario = new Usuario();
+                    usuario.Id = dataReader.GetInt32("Id"); // ==
+                    usuario.Nome = dataReader.GetString("Nome");
+                    usuario.Login = dataReader.GetString("Login"); // ==
+                    usuario.Email = dataReader.GetString("Email");
+                    usuario.Senha = dataReader.GetString("Senha"); // ===
+                    usuario.ChaveVerificacao = dataReader.GetString("ChaveVerificacao");
+                    usuario.LastToken = dataReader.GetString("LastToken");
+                    usuario.IsVerificado = dataReader.GetBoolean("IsVerificado");
+                    usuario.Ativo = dataReader.GetBoolean("Ativo");
+                    usuario.Excluido = dataReader.GetBoolean("Excluido");
+
+                    if (usuario.LastToken == null)
+                    {
+                        if (
+                            usuario.IsVerificado == true &&
+                            usuario.Ativo == true  &&
+                            usuario.Excluido == false 
+                            )
+                        {
+                            // GERAR TOKEN
+
+
+                            // ADICIONA NO BANCO
+                        }
+                        else
+                        {
+                            return "NaoVerificado";
+                        }
+                    }
+                    else
+                    {
+                        return "LastTokenJaContem";
+                    }
+                        
+                        
+                        
+                    
+
+                }
+                else
+                {
+                    return "nulo";
+                }
+
+                
+
+            }
+            finally
+            {
+
+                _connection.Close();
+            }
         }
 
         public void NovoPedido(Pedido pedido)
