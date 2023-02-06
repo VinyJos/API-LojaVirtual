@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
+using System.Security.Policy;
 
 namespace LojaVirtual.Repositories
 {
@@ -171,7 +172,6 @@ namespace LojaVirtual.Repositories
             return produtos;
         }
 
-
         public Produto GetProduto(string url)
         {
             try
@@ -298,9 +298,45 @@ namespace LojaVirtual.Repositories
             }
         }
 
-        public void NovoPedido(Pedido pedido)
+        public Usuario VerificaUsuarioPorId(int usuarioId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "SELECT * FROM Usuario WHERE Id = @Id";
+                command.Parameters.AddWithValue("@Id", usuarioId);
+
+                command.Connection = (SqlConnection)_connection;
+
+                _connection.Open();
+                SqlDataReader dataReader = command.ExecuteReader();
+
+                if (dataReader.Read())
+                {
+                    Usuario usuario = new Usuario();
+                    usuario.Id = dataReader.GetInt32("Id");
+
+                    if (!dataReader.IsDBNull(dataReader.GetOrdinal("LastToken")))
+                        usuario.LastToken = dataReader.GetString("LastToken");
+                    else
+                        usuario.LastToken = null;
+
+                    return usuario;
+
+                }
+                else
+                {
+                    return null;
+                }
+                
+
+
+            }
+            finally
+            {
+
+                _connection.Close();
+            }
         }
         public List<Pedido> ListaPedidos()
         {
@@ -384,5 +420,102 @@ namespace LojaVirtual.Repositories
             
         }
 
+        public Pedido GerarPedido(int usuarioId)
+        {
+            try
+            {
+                Pedido pedido = new Pedido();
+                pedido.UsuarioId = usuarioId;
+                pedido.DataPedido = DateTime.Now;
+
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "INSERT INTO Pedido (UsuarioId, DataPedido) VALUES (@UsuarioId, @DataPedido); SELECT CAST(scope_identity() AS int)";
+                command.Parameters.AddWithValue("@UsuarioId", pedido.UsuarioId);
+                command.Parameters.AddWithValue("@DataPedido", pedido.DataPedido);
+
+                command.Connection = (SqlConnection)_connection;
+                _connection.Open();
+                pedido.Id = (int)command.ExecuteScalar();
+
+                return pedido;
+            }
+            finally
+            {
+
+                _connection.Close();
+            }
+        }
+        
+        public PedidoItem GerarPedidoItem(int pedidoId, int produtoId, int quantidade)
+        {
+            try
+            {
+                PedidoItem pedidoItem = new PedidoItem();
+                pedidoItem.PedidoId = pedidoId;
+                pedidoItem.ProdutoId = produtoId;
+                pedidoItem.Quantidade = quantidade;
+
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "UPDATE Produto SET Quantidade = Quantidade - @Quantidade WHERE Id = @ProdutoId; INSERT INTO PedidoItem (PedidoId, ProdutoId, Quantidade) VALUES (@PedidoId, @ProdutoId, @Quantidade); SELECT CAST(scope_identity() AS int)";
+                command.Parameters.AddWithValue("@PedidoId", pedidoItem.PedidoId);
+                command.Parameters.AddWithValue("@ProdutoId", pedidoItem.ProdutoId);
+                command.Parameters.AddWithValue("@Quantidade", pedidoItem.Quantidade);
+
+                command.Connection = (SqlConnection)_connection;
+                _connection.Open();
+                pedidoItem.Id = (int)command.ExecuteScalar();
+
+                return pedidoItem;
+            }
+            finally
+            {
+
+                _connection.Close();
+            }
+
+        }
+
+        public Produto VerificaProduto(int id)
+        {
+            try
+            {
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "SELECT * FROM Produto WHERE Id = @Id";
+                command.Parameters.AddWithValue("@Id", id);
+
+                command.Connection = (SqlConnection)_connection;
+                _connection.Open();
+
+                SqlDataReader dataReader = command.ExecuteReader();
+
+                Produto produto = new Produto();
+                dataReader.Read();
+                
+                    
+                produto.Id = dataReader.GetInt32(0);
+                produto.CategoriaId = dataReader.GetInt32(1);
+                produto.Nome = dataReader.GetString(2);
+                produto.Url = dataReader.GetString(3);
+                produto.Quantidade = dataReader.GetInt32(4);
+                produto.Ativo = dataReader.GetBoolean(5);
+                produto.Excluido = dataReader.GetBoolean(6);
+
+                return produto;
+                
+            }
+            catch (Exception ex)
+            {
+                // Tratar a exceção aqui
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            finally
+            {
+
+                _connection.Close();
+            }
+
+
+        }
     }
 }

@@ -11,11 +11,8 @@ namespace LojaVirtual.Repositories
         public List<Produto> ProdutosPorCategoria(string url); // Get com ULR
         public Produto GetProduto(string url); // Get Produto 
         public string AutenticaUsuario(int id, string login, string senha); // Update 
-        public void NovoPedido(Pedido pedido); //Post pedido
+        public Usuario VerificaUsuarioPorId(int usuarioId); //Post pedido
         public List<Pedido> ListaPedidos(); // Get pedidos
-
-        // Outros Métodos
-        public string VerificaUsuario(string login);
 
     }
 }

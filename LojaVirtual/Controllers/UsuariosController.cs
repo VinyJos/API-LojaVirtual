@@ -71,7 +71,7 @@ namespace LojaVirtual.Controllers
 
         }
 
-        [HttpPost("AutenticaUsuario")]
+        [HttpPut("AutenticaUsuario")]
         public IActionResult AutenticaUsuario(int id, string login, string senha)
         {
             if (id != null && login != null && senha != null)
