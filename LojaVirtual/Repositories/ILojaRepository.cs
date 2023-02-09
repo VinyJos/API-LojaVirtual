@@ -12,7 +12,7 @@ namespace LojaVirtual.Repositories
         public Produto GetProduto(string url); // Get Produto 
         public string AutenticaUsuario(int id, string login, string senha); // Update 
         public Usuario VerificaUsuarioPorId(int usuarioId); //Post pedido
-        public List<Pedido> ListaPedidos(); // Get pedidos
+        public List<ListaPedido> ListaPedidos(); // Get pedidos
 
     }
 }

@@ -81,5 +81,12 @@ namespace LojaVirtual.Controllers
 
             
         }
+        
+        [HttpGet("ListaDePedidos")] 
+        public IActionResult ListaPedidos()
+        {
+            return Ok(_repository.ListaPedidos());
+        }
+
     }
 }

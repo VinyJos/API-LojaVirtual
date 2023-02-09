@@ -16,7 +16,7 @@ namespace LojaVirtual.Controllers
         }
 
         //[Route("ListagemDeCategorias")]
-        [HttpGet]
+        [HttpGet("ListagemDeCategoriasAtivas")]
         public IActionResult ListagemDeCategorias()
         {
             var categoria = _repository.ListagemDeCategorias();

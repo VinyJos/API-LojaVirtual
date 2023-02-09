@@ -338,9 +338,66 @@ namespace LojaVirtual.Repositories
                 _connection.Close();
             }
         }
-        public List<Pedido> ListaPedidos()
+        public List<ListaPedido> ListaPedidos()
         {
-            throw new NotImplementedException();
+            List<ListaPedido> pedidos = new List<ListaPedido>();
+            //List<PedidoItem> produtos = new List<PedidoItem>();
+            try
+            {
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "SELECT * FROM Pedido INNER JOIN PedidoItem ON Pedido.Id = PedidoItem.PedidoId";
+
+                command.Connection = (SqlConnection)_connection;
+                _connection.Open();
+
+                SqlDataReader dataReader = command.ExecuteReader();
+
+               
+               
+                while (dataReader.Read())
+                {
+                    int pedidoId = dataReader.GetInt32(0);
+                    ListaPedido listaPedido = pedidos.FirstOrDefault(p => p.Id == pedidoId);
+
+                    if (listaPedido == null)
+                    {
+                        listaPedido = new ListaPedido();
+                        listaPedido.Id = pedidoId;
+                        listaPedido.UsuarioId = dataReader.GetInt32(1);
+                        listaPedido.DataPedido = dataReader.GetDateTime(2);
+                        listaPedido.ListaProdutos = new List<PedidoItem>();
+                        pedidos.Add(listaPedido);
+                    }
+
+                    
+                    
+
+
+                    PedidoItem pedidoItem = new PedidoItem();
+                    pedidoItem.Id = dataReader.GetInt32(3);
+                    pedidoItem.PedidoId = dataReader.GetInt32(4);
+                    pedidoItem.ProdutoId = dataReader.GetInt32(5);
+                    pedidoItem.Quantidade = dataReader.GetInt32(6);
+
+
+                    listaPedido.ListaProdutos.Add(pedidoItem);
+
+                   
+
+
+                }
+                
+                return pedidos;
+
+
+
+            }
+            finally
+            {
+
+                _connection.Close();
+            }
+
         }
 
         public string VerificaUsuario(string login)
