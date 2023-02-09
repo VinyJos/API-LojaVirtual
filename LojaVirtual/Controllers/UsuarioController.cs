@@ -9,11 +9,11 @@ namespace LojaVirtual.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuariosController : ControllerBase
+    public class UsuarioController : ControllerBase
     {
         private LojaRepository _repository;
 
-        public UsuariosController()
+        public UsuarioController()
         {
             _repository= new LojaRepository();
         }
@@ -22,7 +22,7 @@ namespace LojaVirtual.Controllers
         [HttpPost("CriarUsuario")]
         public IActionResult CriarUsuario([FromBody]Usuario usuario)
         {
-           
+
             var loginUsuario = _repository.VerificaUsuario(usuario.Login);
             
             if ( loginUsuario != usuario.Login)
@@ -53,8 +53,7 @@ namespace LojaVirtual.Controllers
         [HttpPut("VerificaUsuario")]
         public IActionResult EditarVerificacaoUsuario(Usuario usuario)
         {
-            
-           
+
             var user = _repository.VerificaUsuarioValidacao(usuario);
 
             if (user[0] == usuario.Email && user[1] == usuario.ChaveVerificacao)

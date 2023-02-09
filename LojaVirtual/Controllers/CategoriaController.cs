@@ -1,5 +1,4 @@
-﻿using LojaVirtual.Models;
-using LojaVirtual.Repositories;
+﻿using LojaVirtual.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,19 +6,25 @@ namespace LojaVirtual.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProdutosController : ControllerBase
+    public class CategoriaController : ControllerBase
     {
         private LojaRepository _repository;
 
-        public ProdutosController()
+        public CategoriaController()
         {
             _repository = new LojaRepository();
         }
 
-        //[Route("ProdutosPorCategoria")]
+   
         [HttpGet("ProdutosPorCategoria/{url}")]
         public IActionResult ProdutosPorCategoria(string url)
         {
+
+            if (url == null)
+            {
+                return NotFound();
+            }
+            
             var decodedUrl = Uri.UnescapeDataString(url);
             var listaProdutos = _repository.ProdutosPorCategoria(decodedUrl);
 
@@ -34,28 +39,17 @@ namespace LojaVirtual.Controllers
             }
         }
 
-
-        [HttpGet("GetProduto/{url}")]
-        public IActionResult GetProduto(string url)
+        //[Route("ListagemDeCategorias")]
+        [HttpGet("ListagemDeCategoriasAtivas")]
+        public IActionResult ListagemDeCategoriasAtivas()
         {
-            var decodedUrl = Uri.UnescapeDataString(url);
-            var produto = _repository.GetProduto(decodedUrl);
+            var categoria = _repository.ListagemDeCategorias();
 
-
-            if (produto == null)
+            if (categoria == null)
             {
-                return NotFound("Erro na Url");
+                return NotFound();
             }
-            else if (produto.Ativo == false)
-            {
-                return Ok("Não está disponível");
-            }
-            else
-            {
-                return Ok(produto);
-            }
+            return Ok(categoria);
         }
-
-        
     }
 }

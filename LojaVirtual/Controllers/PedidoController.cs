@@ -1,5 +1,6 @@
 ﻿using LojaVirtual.Models;
 using LojaVirtual.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -81,7 +82,7 @@ namespace LojaVirtual.Controllers
 
             
         }
-        
+
         [HttpGet("ListaDePedidos")] 
         public IActionResult ListaPedidos()
         {
